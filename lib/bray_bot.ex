@@ -48,15 +48,35 @@ defmodule BrayBot do
 
   defp _execute_command({"bb:echo", message}, payload, state) do
     msg = String.upcase(message)
-    Channel.send_message(state[:rest_client], payload.data["channel_id"], %{content: "#{msg} bat at ya"})
+    Channel.send_message(state[:rest_client], payload.data["channel_id"], %{content: "#{msg} \nbat at ya"})
   end
 
   defp _execute_command({"bb:ping", _message}, payload, state) do
     Channel.send_message(state[:rest_client], payload.data["channel_id"], %{content: "Pong!"})
   end
 
+  defp _execute_command({"bb:ack", _message}, payload, state) do
+    bill = """
+    _   /|
+    \\'o.O'
+    =(___)=
+       U    
+    """
+    Channel.send_message(state[:rest_client], payload.data["channel_id"], %{content: _code_sample_markdown(bill)})
+  end
+
+  defp _execute_command({"bb:help", _message}, payload, state) do
+    cheat_sheet = BrayBot.MapChooser.all_hots_maps |> BrayBot.MapChooser.format_maps
+
+    Channel.send_message(state[:rest_client], payload.data["channel_id"], %{content: _code_sample_markdown(cheat_sheet)})
+  end
+
   defp _execute_command({cmd, msg}, _payload, _state) do
     Logger.info("Ignoring command: #{cmd}, msg: #{msg}")
   end
 
+
+  defp _code_sample_markdown(s) do
+    "```\n#{s}\n```"
+  end
 end
