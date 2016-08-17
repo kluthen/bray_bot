@@ -1,20 +1,32 @@
 defmodule BattlegroundChooserTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
+  
+  doctest BrayBot.BattlegroundChooser
 
-  import BrayBot.BattlegroundChooser
-
-  test "chooses 1 map from a list" do
-    choices = ["A", "B", "C"] 
-    assert Enum.member?(choices, choose_battleground(choices))
+  setup do
+    {:ok, chooser} = BrayBot.BattlegroundChooser.start_link
+    {:ok, chooser: chooser}
   end
 
-  test "formats a map list into friendly text sorted by abbreviation" do
-    hots_bgs = %{b: "bar", a: "foo"}
-    expected = """
-    a: foo
-    b: bar
-    """
+  test "defaults to the full list of battlegrounds", %{chooser: chooser} do
+    assert BrayBot.BattlegroundChooser.list(chooser) == BrayBot.BattlegroundChooser.all_battlegrounds
+  end
 
-    assert format_battlegrounds(hots_bgs) == String.trim_trailing(expected)
+  test "ban a battleground from the available pool", %{chooser: chooser} do
+    assert Map.has_key?(BrayBot.BattlegroundChooser.list(chooser), :is)
+
+    BrayBot.BattlegroundChooser.ban(chooser, :is)
+    refute Map.has_key?(BrayBot.BattlegroundChooser.list(chooser), :is)
+  end
+
+  test "`reset` puts all of the battlegrounds back into the pool", %{chooser: chooser} do
+    BrayBot.BattlegroundChooser.ban(chooser, :is)
+    BrayBot.BattlegroundChooser.ban(chooser, :tod)
+    refute Map.has_key?(BrayBot.BattlegroundChooser.list(chooser), :is)
+    refute Map.has_key?(BrayBot.BattlegroundChooser.list(chooser), :tod)
+
+    BrayBot.BattlegroundChooser.reset(chooser)
+    assert Map.has_key?(BrayBot.BattlegroundChooser.list(chooser), :is)
+    assert Map.has_key?(BrayBot.BattlegroundChooser.list(chooser), :tod)
   end
 end

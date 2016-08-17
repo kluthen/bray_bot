@@ -54,7 +54,7 @@ defmodule BrayBot do
   end
 
   defp _execute_command({"bb:help", _message}, payload, state) do
-    cheat_sheet = BrayBot.BattlegroundChooser.all_hots_maps |> BrayBot.BattlegroundChooser.format_maps
+    cheat_sheet = BrayBot.BattlegroundChooser.all_battlegrounds |> BrayBot.BattlegroundChooser.format_battlegrounds
 
     Channel.send_message(state[:rest_client], payload.data["channel_id"], %{content: _code_sample_markdown(cheat_sheet)})
   end

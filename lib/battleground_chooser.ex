@@ -30,10 +30,27 @@ defmodule BrayBot.BattlegroundChooser do
     }
   end
 
+  @doc """
+  Chooses one entry from a map of battlegrounds.
+
+    iex> bgs = %{foo: "Foo", bar: "Bar"}
+    ...> Enum.member?(bgs, BrayBot.BattlegroundChooser.choose_battleground(bgs))
+    true
+
+  """
   def choose_battleground(bg_choices) do
     Enum.random(bg_choices)
   end
 
+  @doc ~S"""
+  Takes a map of battlegrounds and formats it into a string that lists the
+  abbreviations and full names, one battleground per line. The battlegrounds
+  are sorted by their abbreviations.
+
+    iex> BrayBot.BattlegroundChooser.format_battlegrounds(%{b: "B", a: "A", c: "C"}) 
+    "a: A\nb: B\nc: C"
+
+  """
   def format_battlegrounds(bgs) do
     bgs
     |> Map.to_list 
