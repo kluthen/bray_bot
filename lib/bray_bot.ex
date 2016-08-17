@@ -11,17 +11,6 @@ defmodule BrayBot do
   alias DiscordEx.Client.Helpers.MessageHelper
   alias DiscordEx.RestClient.Resources.Channel
 
-  
-  # Message Handler
-  #def handle_event({:message_create, payload}, state) do 
-    #spawn fn ->
-      #if MessageHelper.actionable_message_for?("BrayBot", payload, state) do
-        #_command_parser(payload, state)
-      #end
-    #end
-    #{:ok, state}
-  #end
-
   def handle_event({:message_create, payload}, state) do 
     spawn fn ->
       _command_parser(payload, state)
@@ -34,7 +23,6 @@ defmodule BrayBot do
     Logger.info "Received Event: #{event}"
     {:ok, state}
   end
-
 
   # Select command to execute based off of message payload
   defp _command_parser(payload, state) do
@@ -66,7 +54,7 @@ defmodule BrayBot do
   end
 
   defp _execute_command({"bb:help", _message}, payload, state) do
-    cheat_sheet = BrayBot.MapChooser.all_hots_maps |> BrayBot.MapChooser.format_maps
+    cheat_sheet = BrayBot.BattlegroundChooser.all_hots_maps |> BrayBot.BattlegroundChooser.format_maps
 
     Channel.send_message(state[:rest_client], payload.data["channel_id"], %{content: _code_sample_markdown(cheat_sheet)})
   end
