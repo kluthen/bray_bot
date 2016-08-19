@@ -14,7 +14,10 @@ defmodule BrayBot.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:discord_ex, :logger]]
+    [
+      applications: [:discord_ex, :logger],
+      mod: {BrayBot, []} 
+    ]
   end
 
   # Dependencies can be Hex packages:
