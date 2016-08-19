@@ -25,23 +25,22 @@ defmodule BrayBot.EventHandlers do
     {:ok, state}
   end
 
+  defp command_came_from_bray_bot(payload) do
+    payload[:data]["author"]["username"] == "BrayBot"
+  end
+
   # Select command to execute based off of message payload
   defp _command_parser(payload, state) do
-    case MessageHelper.msg_command_parse(payload) do
-      {nil, msg} -> 
-        Logger.info("do nothing for message: #{msg}")
-      {cmd, msg} -> 
-        _execute_command({cmd, msg}, payload, state)
+    if command_came_from_bray_bot(payload) do
+      IO.puts "Prevent BrayBot from sending commands to itself"
+    else
+      case MessageHelper.msg_command_parse(payload) do
+        {nil, msg} -> 
+          Logger.info("do nothing for message: #{msg}")
+        {cmd, msg} -> 
+          _execute_command({cmd, msg}, payload, state)
+      end
     end
-  end
-
-  defp _execute_command({"bb:echo", message}, payload, state) do
-    msg = String.upcase(message)
-    Channel.send_message(state[:rest_client], payload.data["channel_id"], %{content: "#{msg} \nbat at ya"})
-  end
-
-  defp _execute_command({"bb:ping", _message}, payload, state) do
-    Channel.send_message(state[:rest_client], payload.data["channel_id"], %{content: "Pong!"})
   end
 
   defp _execute_command({"bb:ack", _message}, payload, state) do
@@ -55,28 +54,49 @@ defmodule BrayBot.EventHandlers do
   end
 
   defp _execute_command({"bb:help", _message}, payload, state) do
-    cheat_sheet = BrayBot.BattlegroundChooser.all_battlegrounds |> BrayBot.BattlegroundChooser.format_battlegrounds
-
-    Channel.send_message(state[:rest_client], payload.data["channel_id"], %{content: _code_sample_markdown(cheat_sheet)})
+    Channel.send_message(state[:rest_client], payload.data["channel_id"], %{content: _help})
   end
 
   defp _execute_command({"bb:list", _message}, payload, state) do
-    bgs = BrayBot.BattlegroundChooser.list(BrayBot.BattlegroundChooser) 
-          |> BrayBot.BattlegroundChooser.format_battlegrounds
-
-    Channel.send_message(state[:rest_client], payload.data["channel_id"], %{content: _code_sample_markdown(bgs)})
+    Channel.send_message(state[:rest_client], 
+                         payload.data["channel_id"], 
+                         %{content: _code_sample_markdown(_formatted_remaining_bgs)})
   end
 
-  defp _execute_command({"bb:ban", message}, payload, state) do
-    BrayBot.BattlegroundChooser.ban(message)
+  defp _execute_command({"bb:ban", key}, payload, state) do
+    all_bgs = BrayBot.BattlegroundChooser.all_battlegrounds
 
-    Channel.send_message(state[:rest_client], payload.data["channel_id"], %{content: "Banned '#{message}'"})
+    if Map.has_key?(all_bgs, key) do
+      BrayBot.BattlegroundChooser.ban(key)
+      output = "Banned `'#{Map.get(all_bgs, key)}'`\n\n" <> _code_sample_markdown(_formatted_remaining_bgs)
+
+      Channel.send_message(state[:rest_client], payload.data["channel_id"], %{content: output})
+    else
+      Channel.send_message(state[:rest_client], payload.data["channel_id"], %{content: "'#{key}' is not a valid abbreviation"})
+    end 
   end
 
   defp _execute_command({"bb:reset", _message}, payload, state) do
     BrayBot.BattlegroundChooser.reset()
 
     Channel.send_message(state[:rest_client], payload.data["channel_id"], %{content: "Bans removed"})
+  end
+
+  defp _execute_command({"bb:random", _message}, payload, state) do
+    output = 
+      if Enum.empty?(BrayBot.BattlegroundChooser.list) do
+        """
+        You banned everything. No map for you!
+        Use `!bb:reset` to start over.
+        """
+      else
+        BrayBot.BattlegroundChooser.list
+          |> BrayBot.BattlegroundChooser.choose_battleground
+          |> elem(1)
+          |> _code_sample_markdown
+      end
+
+    Channel.send_message(state[:rest_client], payload.data["channel_id"], %{content: output})
   end
 
   defp _execute_command({cmd, msg}, _payload, _state) do
@@ -88,4 +108,30 @@ defmodule BrayBot.EventHandlers do
     "```\n#{s}\n```"
   end
 
+  defp _formatted_remaining_bgs do
+    bgs = BrayBot.BattlegroundChooser.list
+    |> BrayBot.BattlegroundChooser.format_battlegrounds
+    
+    "Remaining Battlegrounds\n\n" <> bgs
+  end
+
+
+  defp _help do
+    """
+    Battleground Randomizer
+
+    These commands let you (optionally) ban battlegrounds and then choose one at random.
+
+      `!bb:reset` - Removes all bans
+
+      `!bb:list`  - Shows unbanned battlegrounds (and their abbreviations)
+    
+      `!bb:ban abbreviation` - ban a battlegound
+
+        Ex: Banning Garden of Terror
+        `!bb:ban got` 
+
+      `!bb:random` - Choose a random, unbanned, battleground
+    """
+  end
 end

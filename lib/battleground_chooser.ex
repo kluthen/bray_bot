@@ -4,20 +4,6 @@ defmodule BrayBot.BattlegroundChooser do
     Agent.start_link(fn -> all_battlegrounds end, name: __MODULE__)
   end
 
-  def ban(key), do: ban(__MODULE__, key) 
-  def ban(bg_chooser, key) do
-    Agent.get_and_update(bg_chooser, &Map.pop(&1, key))
-  end
-
-  def list(bg_chooser) do
-    Agent.get(bg_chooser, &(&1))
-  end
-
-  def reset(), do: reset(__MODULE__)
-  def reset(bg_chooser) do
-    Agent.update(bg_chooser, fn _ -> all_battlegrounds end)
-  end
-
   def all_battlegrounds do
     %{
       "tod"   => "Towers of Doom",
@@ -30,6 +16,21 @@ defmodule BrayBot.BattlegroundChooser do
       "ds"    => "Dragon Shire",
       "ch"    => "Cursed Hollow"
     }
+  end
+
+  def ban(key), do: ban(__MODULE__, key) 
+  def ban(bg_chooser, key) do
+    Agent.get_and_update(bg_chooser, &Map.pop(&1, key))
+  end
+
+  def list, do: list(__MODULE__)
+  def list(bg_chooser) do
+    Agent.get(bg_chooser, &(&1))
+  end
+
+  def reset(), do: reset(__MODULE__)
+  def reset(bg_chooser) do
+    Agent.update(bg_chooser, fn _ -> all_battlegrounds end)
   end
 
   @doc """

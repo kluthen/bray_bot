@@ -1,5 +1,5 @@
 defmodule BattlegroundChooserTest do
-  use ExUnit.Case, async: true
+  use ExUnit.Case, async: false
   
   doctest BrayBot.BattlegroundChooser
 
@@ -26,6 +26,24 @@ defmodule BattlegroundChooserTest do
     refute Map.has_key?(BrayBot.BattlegroundChooser.list(chooser), "tod")
 
     BrayBot.BattlegroundChooser.reset(chooser)
+    assert Map.has_key?(BrayBot.BattlegroundChooser.list(chooser), "is")
+    assert Map.has_key?(BrayBot.BattlegroundChooser.list(chooser), "tod")
+  end
+
+  test "crashing the process results in a shiny fresh list", %{chooser: chooser} do
+    BrayBot.BattlegroundChooser.ban(chooser, "is")
+    BrayBot.BattlegroundChooser.ban(chooser, "tod")
+    refute Map.has_key?(BrayBot.BattlegroundChooser.list(chooser), "is")
+    refute Map.has_key?(BrayBot.BattlegroundChooser.list(chooser), "tod")
+
+    # Kill off the chooser process, and then wait for it to actually die.
+    pid = Process.whereis(chooser)
+    ref = Process.monitor(pid)
+
+    Process.exit(pid, :shutdown)
+    Process.sleep(200)
+    assert_receive {:DOWN, ^ref, _,_,_}
+    
     assert Map.has_key?(BrayBot.BattlegroundChooser.list(chooser), "is")
     assert Map.has_key?(BrayBot.BattlegroundChooser.list(chooser), "tod")
   end
