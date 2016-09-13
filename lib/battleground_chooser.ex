@@ -14,7 +14,8 @@ defmodule BrayBot.BattlegroundChooser do
       "got"   => "Garden of Terror",
       "bb"    => "Blackheart's Bay",
       "ds"    => "Dragon Shire",
-      "ch"    => "Cursed Hollow"
+      "ch"    => "Cursed Hollow",
+      "bh"    => "Braxis Holdout"
     }
   end
 
