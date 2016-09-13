@@ -17,3 +17,7 @@ erl_crash.dump
 *.ez
 
 .env
+
+.env_test
+erlang-solutions_1.0_all.deb
+nohup.out
