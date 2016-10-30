@@ -15,7 +15,8 @@ defmodule BrayBot.BattlegroundChooser do
       "bb"    => "Blackheart's Bay",
       "ds"    => "Dragon Shire",
       "ch"    => "Cursed Hollow",
-      "bh"    => "Braxis Holdout"
+      "bh"    => "Braxis Holdout",
+      "wj"   => "Warhead Junction"
     }
   end
 

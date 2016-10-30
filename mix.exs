@@ -15,7 +15,7 @@ defmodule BrayBot.Mixfile do
   # Type "mix help compile.app" for more information
   def application do
     [
-      applications: [:discord_ex, :logger],
+      applications: [:logger, :discord_ex],
       mod: {BrayBot, []} 
     ]
   end
@@ -31,7 +31,7 @@ defmodule BrayBot.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:discord_ex, "~> 1.1.4"}
+      {:discord_ex, git: "https://github.com/rmcafee/discord_ex.git", branch: "master"}
     ]
   end
 end
