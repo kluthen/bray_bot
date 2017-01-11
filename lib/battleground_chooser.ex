@@ -6,6 +6,7 @@ defmodule BrayBot.BattlegroundChooser do
 
   def all_battlegrounds do
     %{
+      "hm"    => "Haunted Mines",
       "tod"   => "Towers of Doom",
       "is"    => "Infernal Shrines",
       "boe"   => "Battlefield of Eternity",
@@ -16,7 +17,7 @@ defmodule BrayBot.BattlegroundChooser do
       "ds"    => "Dragon Shire",
       "ch"    => "Cursed Hollow",
       "bh"    => "Braxis Holdout",
-      "wj"   => "Warhead Junction"
+      "wj"    => "Warhead Junction"
     }
   end
 
