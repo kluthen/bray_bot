@@ -66,7 +66,7 @@ defmodule BrayBot.EventHandlers do
   defp _execute_command({"bb:ban", name}, payload, state) do
     all_bgs = BrayBot.BattlegroundChooser.all_battlegrounds
 
-    key = BattlegroundChooser.find_bg_key(name)
+    key = BrayBot.BattlegroundChooser.find_bg_key(name)
     if key do
       BrayBot.BattlegroundChooser.ban(key)
       output = "Banned `'#{Map.get(all_bgs, key)}'`\n\n" <> _code_sample_markdown(_formatted_remaining_bgs)
