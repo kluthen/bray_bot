@@ -22,9 +22,27 @@ defmodule BrayBot.BattlegroundChooser do
     }
   end
 
-  def ban(key), do: ban(__MODULE__, key)
-  def ban(bg_chooser, key) do
+  def ban(name), do: ban(__MODULE__, name)
+  def ban(bg_chooser, name) do
+    key = find_bg_key(name)
     Agent.get_and_update(bg_chooser, &Map.pop(&1, key))
+  end
+
+  def find_bg_key(name) do
+    if Map.has_key?(all_battlegrounds, name) do
+      key = name
+    else
+      fish_key_from_bg_names(name)
+    end
+  end
+
+  def fish_key_from_bg_names(name) do
+    downcased_name = name |> String.downcase
+    if entry = all_battlegrounds |> Enum.find(fn {k,v} -> v |> String.downcase |> String.starts_with?(downcased_name) end) do
+      entry |> elem(0)
+    else
+      nil
+    end
   end
 
   def list, do: list(__MODULE__)

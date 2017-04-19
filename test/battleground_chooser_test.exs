@@ -19,6 +19,13 @@ defmodule BattlegroundChooserTest do
     refute Map.has_key?(BrayBot.BattlegroundChooser.list(chooser), "is")
   end
 
+  test "ban a battleground via the first few letters of its name (case insensitve)", %{chooser: chooser} do
+    assert Map.has_key?(BrayBot.BattlegroundChooser.list(chooser), "is")
+
+    BrayBot.BattlegroundChooser.ban(chooser, "inf")
+    refute Map.has_key?(BrayBot.BattlegroundChooser.list(chooser), "is")
+  end
+
   test "`reset` puts all of the battlegrounds back into the pool", %{chooser: chooser} do
     BrayBot.BattlegroundChooser.ban(chooser, "is")
     BrayBot.BattlegroundChooser.ban(chooser, "tod")
