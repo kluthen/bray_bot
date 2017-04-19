@@ -1,6 +1,6 @@
 defmodule BattlegroundChooserTest do
   use ExUnit.Case, async: false
-  
+
   doctest BrayBot.BattlegroundChooser
 
   setup do
@@ -43,7 +43,7 @@ defmodule BattlegroundChooserTest do
     Process.exit(pid, :shutdown)
     Process.sleep(200)
     assert_receive {:DOWN, ^ref, _,_,_}
-    
+
     assert Map.has_key?(BrayBot.BattlegroundChooser.list(chooser), "is")
     assert Map.has_key?(BrayBot.BattlegroundChooser.list(chooser), "tod")
   end
