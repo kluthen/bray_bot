@@ -31,7 +31,7 @@ defmodule BrayBot.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:discord_ex, git: "https://github.com/rmcafee/discord_ex.git", branch: "master"}
+      {:discord_ex, git: "https://github.com/jdl/discord_ex.git", branch: "master"}
     ]
   end
 end

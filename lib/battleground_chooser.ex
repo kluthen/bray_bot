@@ -22,7 +22,7 @@ defmodule BrayBot.BattlegroundChooser do
     }
   end
 
-  def ban(key), do: ban(__MODULE__, key) 
+  def ban(key), do: ban(__MODULE__, key)
   def ban(bg_chooser, key) do
     Agent.get_and_update(bg_chooser, &Map.pop(&1, key))
   end
@@ -54,15 +54,15 @@ defmodule BrayBot.BattlegroundChooser do
   abbreviations and full names, one battleground per line. The battlegrounds
   are sorted by their abbreviations.
 
-    iex> BrayBot.BattlegroundChooser.format_battlegrounds(%{b: "B", a: "A", c: "C"}) 
+    iex> BrayBot.BattlegroundChooser.format_battlegrounds(%{b: "B", a: "A", c: "C"})
     "a: A\nb: B\nc: C"
 
   """
   def format_battlegrounds(bgs) do
     bgs
-    |> Map.to_list 
-    |> Enum.sort(fn({a, _}, {b, _}) -> a <= b end) 
-    |> Enum.map(fn({nick, name}) -> "#{nick}: #{name}" end) 
+    |> Map.to_list
+    |> Enum.sort(fn({a, _}, {b, _}) -> a <= b end)
+    |> Enum.map(fn({nick, name}) -> "#{nick}: #{name}" end)
     |> Enum.join("\n")
   end
 

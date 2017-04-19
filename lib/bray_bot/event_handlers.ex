@@ -12,7 +12,7 @@ defmodule BrayBot.EventHandlers do
   alias DiscordEx.Client.Helpers.MessageHelper
   alias DiscordEx.RestClient.Resources.Channel
 
-  def handle_event({:message_create, payload}, state) do 
+  def handle_event({:message_create, payload}, state) do
     spawn fn ->
       _command_parser(payload, state)
     end
@@ -35,9 +35,9 @@ defmodule BrayBot.EventHandlers do
       IO.puts "Prevent BrayBot from sending commands to itself"
     else
       case MessageHelper.msg_command_parse(payload) do
-        {nil, msg} -> 
+        {nil, msg} ->
           Logger.info("do nothing for message: #{msg}")
-        {cmd, msg} -> 
+        {cmd, msg} ->
           _execute_command({cmd, msg}, payload, state)
       end
     end
@@ -48,7 +48,7 @@ defmodule BrayBot.EventHandlers do
     _   /|
     \\'o.O'
     =(___)=
-       U    
+       U
     """
     Channel.send_message(state[:rest_client], payload.data["channel_id"], %{content: _code_sample_markdown(bill)})
   end
@@ -58,8 +58,8 @@ defmodule BrayBot.EventHandlers do
   end
 
   defp _execute_command({"bb:list", _message}, payload, state) do
-    Channel.send_message(state[:rest_client], 
-                         payload.data["channel_id"], 
+    Channel.send_message(state[:rest_client],
+                         payload.data["channel_id"],
                          %{content: _code_sample_markdown(_formatted_remaining_bgs)})
   end
 
@@ -73,7 +73,7 @@ defmodule BrayBot.EventHandlers do
       Channel.send_message(state[:rest_client], payload.data["channel_id"], %{content: output})
     else
       Channel.send_message(state[:rest_client], payload.data["channel_id"], %{content: "'#{key}' is not a valid abbreviation"})
-    end 
+    end
   end
 
   defp _execute_command({"bb:reset", _message}, payload, state) do
@@ -83,7 +83,7 @@ defmodule BrayBot.EventHandlers do
   end
 
   defp _execute_command({"bb:random", _message}, payload, state) do
-    output = 
+    output =
       if Enum.empty?(BrayBot.BattlegroundChooser.list) do
         """
         You banned everything. No map for you!
@@ -111,7 +111,7 @@ defmodule BrayBot.EventHandlers do
   defp _formatted_remaining_bgs do
     bgs = BrayBot.BattlegroundChooser.list
     |> BrayBot.BattlegroundChooser.format_battlegrounds
-    
+
     "Remaining Battlegrounds\n\n" <> bgs
   end
 
@@ -125,11 +125,11 @@ defmodule BrayBot.EventHandlers do
       `!bb:reset` - Removes all bans
 
       `!bb:list`  - Shows unbanned battlegrounds (and their abbreviations)
-    
+
       `!bb:ban abbreviation` - ban a battlegound
 
         Ex: Banning Garden of Terror
-        `!bb:ban got` 
+        `!bb:ban got`
 
       `!bb:random` - Choose a random, unbanned, battleground
     """
