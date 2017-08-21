@@ -5,6 +5,7 @@ defmodule BrayBot.Mixfile do
     [app: :bray_bot,
      version: "0.1.0",
      elixir: "~> 1.4",
+     
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      deps: deps()]
@@ -31,7 +32,8 @@ defmodule BrayBot.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:discord_ex, git: "https://github.com/jdl/discord_ex.git", branch: "master"}
+      {:discord_ex, git: "https://github.com/kluthen/discord_ex.git", branch: "master"},
+      {:plug, "~> 1.3"}
     ]
   end
 end

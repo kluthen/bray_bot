@@ -30,6 +30,6 @@ use Mix.Config
 #
 #     import_config "#{Mix.env}.exs"
 
-config :bray_bot, :discord_token, System.get_env("BRAY_BOT_DISCORD_TOKEN")
+config :bray_bot, :discord_token, "MzQ5MjYyMDQyOTcwMTkzOTIx.DHy7dw.wwZgVRCDuR9O4sHbbna_7ReSsDY"
 
 
